@@ -1,5 +1,5 @@
 import { OrderItem } from './order-item.entity.js';
-import { InvalidOrderError } from '../exceptions/order.errors.js';
+import { InvalidOrderError } from '../errors/order.errors.js';
 
 export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';
 
