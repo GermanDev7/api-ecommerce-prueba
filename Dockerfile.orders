@@ -1,0 +1,42 @@
+# Etapa de compilación
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copiar configuraciones y metadatos de NPM Workspaces
+COPY package*.json ./
+COPY libs/shared/package*.json ./libs/shared/
+COPY services/orders-service/package*.json ./services/orders-service/
+
+# Instalar dependencias (NPM instalará todo y hará hoisting al root)
+RUN npm install
+
+# Copiar el código fuente completo
+COPY libs/shared ./libs/shared
+COPY services/orders-service ./services/orders-service
+
+# Generar el cliente Prisma (Localizado)
+RUN npx --yes prisma generate --schema=services/orders-service/src/prisma/schema.prisma
+
+# Compilar los proyectos
+RUN npm run build --workspace=@ecommerce/orders-service
+
+# Etapa de Producción
+FROM node:20-alpine
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY package*.json ./
+COPY services/orders-service/package*.json ./services/orders-service/
+RUN npm install --omit=dev
+
+# Archivos compilados y directorios Prisma generados
+COPY --from=builder /app/services/orders-service/dist ./services/orders-service/dist
+COPY --from=builder /app/services/orders-service/src/generated ./services/orders-service/src/generated
+COPY --from=builder /app/services/orders-service/src/prisma ./services/orders-service/src/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Puerto y Comando
+EXPOSE 3002
+CMD ["node", "services/orders-service/dist/src/main.js"]

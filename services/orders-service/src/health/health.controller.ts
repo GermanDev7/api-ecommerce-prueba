@@ -17,7 +17,7 @@ export class HealthController {
   @ApiOperation({ summary: 'Check API and DB health status' })
   check() {
     return this.health.check([
-      () => this.prismaHealth.pingCheck('database', this.prisma as any),
+      () => this.prismaHealth.pingCheck('database', this.prisma as never),
     ]);
   }
 }

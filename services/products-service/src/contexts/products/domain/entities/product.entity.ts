@@ -1,4 +1,4 @@
-export type ProductStatus = 'ACTIVE' | 'INACTIVE';
+import { ProductStatus } from '../enums/product-status.enum.js';
 
 export interface ProductProps {
   name: string;

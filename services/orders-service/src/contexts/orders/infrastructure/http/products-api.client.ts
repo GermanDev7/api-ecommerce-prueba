@@ -31,7 +31,8 @@ export class HttpProductsApiClient implements ProductsServiceClient {
         stock: data.stock,
         status: data.status,
       };
-    } catch (error: any) {
+    } catch (e: unknown) {
+      const error = e as import('axios').AxiosError;
       if (error.response?.status === 404) {
         this.logger.warn(`Product ${productId} not found`);
         return null;

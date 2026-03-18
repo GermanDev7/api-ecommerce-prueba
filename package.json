@@ -10,6 +10,11 @@
   "author": "",
   "license": "ISC",
   "description": "",
+  "scripts": {
+    "test:all": "npm run test --workspaces --if-present",
+    "build:all": "npm run build --workspaces --if-present",
+    "lint:all": "npm run lint --workspaces --if-present"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.2"
   }

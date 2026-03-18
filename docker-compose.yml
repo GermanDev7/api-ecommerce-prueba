@@ -1,0 +1,72 @@
+services:
+  products-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: products
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5434:5432"
+    volumes:
+      - products-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  orders-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: orders
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5435:5432"
+    volumes:
+      - orders-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  products-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.products
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      # Conexión interna a la red de Docker (products-db en lugar de localhost)
+      - DATABASE_URL=postgresql://postgres:rootpassword@products-db:5432/products?schema=public
+    depends_on:
+      products-db:
+        condition: service_healthy
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.orders
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      # Conexión interna a la red de Docker (orders-db)
+      - DATABASE_URL=postgresql://postgres:rootpassword@orders-db:5432/orders?schema=public
+      # Conexión REST a API de Productos usando el nombre del contenedor
+      - PRODUCTS_SERVICE_URL=http://products-service:3001/api/v1
+    depends_on:
+      orders-db:
+        condition: service_healthy
+      products-service:
+        condition: service_started
+
+volumes:
+  products-data:
+  orders-data:

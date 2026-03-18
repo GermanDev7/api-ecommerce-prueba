@@ -1,7 +1,7 @@
 import { OrderItem } from './order-item.entity.js';
 import { InvalidOrderError } from '../errors/order.errors.js';
 
-export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'CANCELLED';
+import { OrderStatus } from '../enums/order-status.enum.js';
 
 export interface OrderProps {
   status: OrderStatus;

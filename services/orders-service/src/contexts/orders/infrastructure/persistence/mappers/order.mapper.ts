@@ -37,7 +37,7 @@ export class OrderMapper {
         orderId: order.id,
         productId: item.productId,
         quantity: item.quantity,
-        unitPrice: item.unitPrice as any,
+        unitPrice: item.unitPrice as unknown as PrismaOrderItem['unitPrice'],
       })),
     };
   }

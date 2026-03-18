@@ -1,0 +1,42 @@
+name: Backend CI Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  quality-gate:
+    name: Build, Lint & Test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install Dependencies
+      run: npm ci
+      
+    - name: Generate Prisma Clients
+      run: |
+        npx prisma generate --schema=services/products-service/src/prisma/schema.prisma
+        npx prisma generate --schema=services/orders-service/src/prisma/schema.prisma
+        
+    - name: Run Linter
+      run: npm run lint --workspaces --if-present
+      
+    - name: Build Modules
+      run: |
+        npm run build --workspace=@ecommerce/shared
+        npm run build --workspace=@ecommerce/products-service
+        npm run build --workspace=@ecommerce/orders-service
+        
+    - name: Run Unit Tests
+      run: npm run test --workspaces --if-present
