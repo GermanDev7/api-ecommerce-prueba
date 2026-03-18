@@ -15,10 +15,13 @@ RUN npm install
 COPY libs/shared ./libs/shared
 COPY services/orders-service ./services/orders-service
 
+# Compilar la librería compartida
+RUN npm run build --workspace=@ecommerce/shared
+
 # Generar el cliente Prisma (Localizado)
 RUN npx --yes prisma generate --schema=services/orders-service/src/prisma/schema.prisma
 
-# Compilar los proyectos
+# Compilar el servicio
 RUN npm run build --workspace=orders-service
 
 # Etapa de Producción
@@ -28,15 +31,19 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY package*.json ./
+COPY libs/shared/package*.json ./libs/shared/
 COPY services/orders-service/package*.json ./services/orders-service/
-RUN npm install --omit=dev
+RUN npm install --omit=dev --ignore-scripts
+
+# Librería compartida compilada
+COPY --from=builder /app/libs/shared/dist ./libs/shared/dist
 
 # Archivos compilados y directorios Prisma generados
 COPY --from=builder /app/services/orders-service/dist ./services/orders-service/dist
-COPY --from=builder /app/services/orders-service/src/generated ./services/orders-service/src/generated
+COPY --from=builder /app/node_modules/@ecommerce ./node_modules/@ecommerce
 COPY --from=builder /app/services/orders-service/src/prisma ./services/orders-service/src/prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Puerto y Comando
 EXPOSE 3002
-CMD ["node", "services/orders-service/dist/src/main.js"]
+CMD ["node", "services/orders-service/dist/main.js"]
