@@ -6,7 +6,6 @@ import {
 } from '../ports/products-service.client.js';
 import { InvalidOrderError } from '../../domain/errors/order.errors.js';
 import { Order } from '../../domain/entities/order.entity.js';
-import { NotFoundException } from '@nestjs/common';
 
 describe('CreateOrderUseCase', () => {
   let useCase: CreateOrderUseCase;
