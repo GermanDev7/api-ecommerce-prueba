@@ -14,14 +14,6 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "paths": {
-      "@ecommerce/shared": [
-        "../../libs/shared/src/index"
-      ],
-      "@ecommerce/shared/*": [
-        "../../libs/shared/src/*"
-      ]
-    },
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

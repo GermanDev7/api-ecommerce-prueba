@@ -3,7 +3,7 @@ import { OrderItem as OrderItemEntity } from '../../../domain/entities/order-ite
 import type {
   Order as PrismaOrder,
   OrderItem as PrismaOrderItem,
-} from '../../../../../generated/prisma/index.js';
+} from '@ecommerce/prisma-orders';
 
 type PrismaOrderWithItems = PrismaOrder & { items: PrismaOrderItem[] };
 
