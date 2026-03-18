@@ -66,7 +66,7 @@ describe('CreateOrderUseCase', () => {
 
     await expect(
       useCase.execute({ items: [{ productId: 'ghost-prod', quantity: 1 }] }),
-    ).rejects.toThrow(NotFoundException);
+    ).rejects.toThrow(InvalidOrderError);
 
     expect(mockOrderRepository.save).not.toHaveBeenCalled();
   });
@@ -83,7 +83,7 @@ describe('CreateOrderUseCase', () => {
 
     await expect(
       useCase.execute({ items: [{ productId: 'prod-1', quantity: 6 }] }),
-    ).rejects.toThrow('Product prod-1 has insufficient stock. Available: 5');
+    ).rejects.toThrow('Insufficient stock for product prod-1. Available: 5');
 
     expect(mockOrderRepository.save).not.toHaveBeenCalled();
   });
