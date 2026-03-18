@@ -8,7 +8,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('OrdersService');
 
-  // Global Validation
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -17,10 +16,8 @@ async function bootstrap() {
     }),
   );
 
-  // Global Shared Error Formatting
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger Documentation
   const config = new DocumentBuilder()
     .setTitle('Orders Service')
     .setDescription('API for managing orders and connecting to products')
@@ -29,7 +26,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  // Read port from Config / defaults to 3002 to avoid collision with products (3001)
   const port = process.env.PORT ?? 3002;
   await app.listen(port);
   logger.log(`Orders service running on port ${port}`);

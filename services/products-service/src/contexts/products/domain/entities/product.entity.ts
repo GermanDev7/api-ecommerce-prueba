@@ -19,7 +19,6 @@ export class Product {
     this.props = props;
   }
 
-  // Factory: creates a new product, enforces invariants
   static create(input: {
     name: string;
     description?: string;
@@ -39,7 +38,6 @@ export class Product {
     });
   }
 
-  // Factory: reconstitute from persistence
   static reconstitute(props: ProductProps, id: string): Product {
     return new Product(props, id);
   }

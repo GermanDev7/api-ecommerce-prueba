@@ -111,3 +111,8 @@ dist/
 *.txt
 !README.md
 !docs/**/*.md
+
+# Prisma Generated Client
+src/generated/
+
+**/src/generated/

@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Database for Products Service
+  products-db:
+    image: postgres:15-alpine
+    container_name: products_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: products
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5434:5432" # Exposed on port 5434 to avoid host conflicts
+    volumes:
+      - products-data:/var/lib/postgresql/data
+
+  # Database for Orders Service
+  orders-db:
+    image: postgres:15-alpine
+    container_name: orders_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: orders
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5435:5432" # Exposed on port 5435 to avoid collision
+    volumes:
+      - orders-data:/var/lib/postgresql/data
+
+volumes:
+  products-data:
+  orders-data:

@@ -1,6 +1,6 @@
-import { Order as OrderEntity } from '../../domain/entities/order.entity.js';
-import { OrderItem as OrderItemEntity } from '../../domain/entities/order-item.entity.js';
-import type { Order as PrismaOrder, OrderItem as PrismaOrderItem } from '@prisma/client';
+import { Order as OrderEntity } from '../../../domain/entities/order.entity.js';
+import { OrderItem as OrderItemEntity } from '../../../domain/entities/order-item.entity.js';
+import type { Order as PrismaOrder, OrderItem as PrismaOrderItem } from '../../../../../generated/prisma/index.js';
 
 type PrismaOrderWithItems = PrismaOrder & { items: PrismaOrderItem[] };
 
@@ -37,7 +37,7 @@ export class OrderMapper {
         orderId: order.id,
         productId: item.productId,
         quantity: item.quantity,
-        unitPrice: item.unitPrice as any, // Prisma Decimal handling cast
+        unitPrice: item.unitPrice as any,
       })),
     };
   }

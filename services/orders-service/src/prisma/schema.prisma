@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../node_modules/@prisma/client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -22,7 +22,7 @@ model OrderItem {
   id        String  @id @default(uuid())
   orderId   String  @map("order_id")
   order     Order   @relation(fields: [orderId], references: [id])
-  productId String  @map("product_id") // Notice NO foreign key to product DB table !
+  productId String  @map("product_id")
   quantity  Int
   unitPrice Decimal @map("unit_price") @db.Decimal(10, 2)
 

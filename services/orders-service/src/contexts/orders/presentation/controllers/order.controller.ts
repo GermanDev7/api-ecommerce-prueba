@@ -3,12 +3,14 @@ import {
   Get,
   Post,
   Body,
+  Param,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateOrderUseCase } from '../../application/use-cases/create-order.use-case.js';
 import { ListOrdersUseCase } from '../../application/use-cases/list-orders.use-case.js';
+import { GetOrderUseCase } from '../../application/use-cases/get-order.use-case.js';
 import { CreateOrderDto } from '../dtos/create-order.dto.js';
 import type { Order } from '../../domain/entities/order.entity.js';
 
@@ -18,6 +20,7 @@ export class OrderController {
   constructor(
     private readonly createOrderUseCase: CreateOrderUseCase,
     private readonly listOrdersUseCase: ListOrdersUseCase,
+    private readonly getOrderUseCase: GetOrderUseCase,
   ) {}
 
   @Post()
@@ -26,7 +29,7 @@ export class OrderController {
   @ApiResponse({ status: 201, description: 'Order created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data or business rule violation (e.g., out of stock)' })
   async create(@Body() dto: CreateOrderDto): Promise<OrderResponse> {
-    // Controller just passes the DTO to the Application use case
+
     const order = await this.createOrderUseCase.execute(dto);
     return toResponse(order);
   }
@@ -39,9 +42,18 @@ export class OrderController {
     const orders = await this.listOrdersUseCase.execute();
     return { data: orders.map(toResponse), total: orders.length };
   }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Get an order by ID' })
+  @ApiResponse({ status: 200, description: 'Order found successfully' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  async findOne(@Param('id') id: string): Promise<OrderResponse> {
+    const order = await this.getOrderUseCase.execute(id);
+    return toResponse(order);
+  }
 }
 
-// Data projection to keep domain entity private inside the service boundary
 interface OrderResponse {
   id: string;
   status: string;
@@ -60,7 +72,7 @@ function toResponse(order: Order): OrderResponse {
   return {
     id: order.id,
     status: order.status,
-    totalAmount: order.totalAmount, // Calculated by the domain entity
+    totalAmount: order.totalAmount,
     items: order.items.map((item) => ({
       id: item.id,
       productId: item.productId,

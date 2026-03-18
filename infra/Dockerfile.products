@@ -1,0 +1,52 @@
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy the entire workspace configuration
+COPY package*.json ./
+COPY services/products-service/package*.json ./services/products-service/
+COPY libs/shared/package*.json ./libs/shared/
+
+# Install all dependencies (including dev deps to build)
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Generate Prisma Client specifically for products
+RUN cd services/products-service && npx prisma generate
+
+# Build the shared library and the products service
+RUN npm run build --workspace=@ecommerce/shared
+RUN npm run build --workspace=@ecommerce/products-service
+
+# ---
+
+# Production stage
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Set node env
+ENV NODE_ENV=production
+
+# Copy package files for production install
+COPY package*.json ./
+COPY services/products-service/package*.json ./services/products-service/
+COPY libs/shared/package*.json ./libs/shared/
+
+# Install only production dependencies
+RUN npm install --omit=dev
+
+# Copy the built artifacts from builder
+COPY --from=builder /app/libs/shared/dist ./libs/shared/dist
+COPY --from=builder /app/services/products-service/dist ./services/products-service/dist
+COPY --from=builder /app/services/products-service/src/prisma ./services/products-service/src/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Map port
+EXPOSE 3001
+
+# Start the service
+CMD ["node", "services/products-service/dist/main.js"]

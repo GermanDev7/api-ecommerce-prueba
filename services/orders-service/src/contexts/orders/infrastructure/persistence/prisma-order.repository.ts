@@ -11,7 +11,6 @@ export class PrismaOrderRepository implements OrderRepository {
   async save(order: Order): Promise<Order> {
     const data = OrderMapper.toPersistence(order);
 
-    // Prisma transaction to save order and its items together
     const saved = await this.prisma.order.create({
       data: {
         id: data.id,

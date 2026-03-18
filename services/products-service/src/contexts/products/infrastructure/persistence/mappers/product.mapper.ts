@@ -1,6 +1,7 @@
-import type { Product } from '../../domain/entities/product.entity.js';
-import type { Product as PrismaProduct } from '@prisma/client';
-import { Product as ProductEntity } from '../../domain/entities/product.entity.js';
+import type { Product } from '../../../domain/entities/product.entity.js';
+
+import type { Product as PrismaProduct } from '../../../../../generated/prisma/index.js';
+import { Product as ProductEntity } from '../../../domain/entities/product.entity.js';
 
 export class ProductMapper {
   static toDomain(raw: PrismaProduct): Product {

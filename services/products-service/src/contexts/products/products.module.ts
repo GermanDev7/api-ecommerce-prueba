@@ -4,19 +4,21 @@ import { PrismaProductRepository } from './infrastructure/persistence/prisma-pro
 import { PRODUCT_REPOSITORY } from './domain/repositories/product.repository.js';
 import { CreateProductUseCase } from './application/use-cases/create-product.use-case.js';
 import { ListProductsUseCase } from './application/use-cases/list-products.use-case.js';
+import { GetProductUseCase } from './application/use-cases/get-product.use-case.js';
 import { ProductController } from './presentation/controllers/product.controller.js';
 
 @Module({
   controllers: [ProductController],
   providers: [
     PrismaService,
-    // Bind the port (interface) to the concrete adapter (Prisma)
+
     {
       provide: PRODUCT_REPOSITORY,
       useClass: PrismaProductRepository,
     },
     CreateProductUseCase,
     ListProductsUseCase,
+    GetProductUseCase,
   ],
 })
 export class ProductsModule {}

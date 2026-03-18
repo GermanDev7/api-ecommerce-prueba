@@ -15,6 +15,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
+      "@ecommerce/shared": [
+        "../../libs/shared/src/index"
+      ],
       "@ecommerce/shared/*": [
         "../../libs/shared/src/*"
       ]

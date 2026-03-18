@@ -18,7 +18,6 @@ export class CreateOrderUseCase {
   async execute(dto: CreateOrderDto): Promise<Order> {
     const orderItems: OrderItem[] = [];
 
-    // Inter-service transaction logic: Validate each product via HTTP before creating the order
     for (const itemDto of dto.items) {
       const product = await this.productsClient.getProductDetails(itemDto.productId);
       
@@ -34,7 +33,6 @@ export class CreateOrderUseCase {
         throw new InvalidOrderError(`Insufficient stock for product ${itemDto.productId}. Available: ${product.stock}`);
       }
 
-      // We snap the current *unit price* from the Product API, ensuring the price is historically accurate when the order is made
       const orderItem = new OrderItem(itemDto.productId, itemDto.quantity, product.price);
       orderItems.push(orderItem);
     }

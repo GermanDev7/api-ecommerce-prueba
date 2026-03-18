@@ -19,7 +19,6 @@ export class Order {
     this.props = props;
   }
 
-  // Factory: create new order
   static create(items: OrderItem[]): Order {
     if (!items || items.length === 0) {
       throw new InvalidOrderError('An order must contain at least one item');
@@ -33,7 +32,6 @@ export class Order {
     });
   }
 
-  // Factory: reconstitute from DB
   static reconstitute(props: OrderProps, id: string): Order {
     return new Order(props, id);
   }
@@ -44,7 +42,6 @@ export class Order {
   get createdAt(): Date { return this.props.createdAt; }
   get updatedAt(): Date { return this.props.updatedAt; }
 
-  // Business logic: total calculation belongs to the domain
   get totalAmount(): number {
     const total = this.props.items.reduce((sum, item) => sum + item.subtotal, 0);
     return Math.round(total * 100) / 100;

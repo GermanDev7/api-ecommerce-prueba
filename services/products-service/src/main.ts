@@ -8,19 +8,16 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const logger = new Logger('ProductsService');
 
-  // Global validation pipe — validates all incoming DTOs
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,       // strips unknown properties
+      whitelist: true,      
       forbidNonWhitelisted: true,
-      transform: true,       // auto-transform payload types
+      transform: true,      
     }),
   );
 
-  // Global exception filter — standardizes error responses
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // Swagger docs at /api/docs
   const config = new DocumentBuilder()
     .setTitle('Products Service')
     .setDescription('API for managing the product catalog')

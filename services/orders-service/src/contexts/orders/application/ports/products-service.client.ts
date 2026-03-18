@@ -5,8 +5,6 @@ export interface ProductDetails {
   status: string;
 }
 
-// Puerto de salida (Output Port) para comunicación con el microservicio de Productos.
-// Evita acoplar la capa de aplicación con una librería HTTP específica (como Axios).
 export interface ProductsServiceClient {
   getProductDetails(productId: string): Promise<ProductDetails | null>;
 }

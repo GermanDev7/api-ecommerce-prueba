@@ -13,7 +13,7 @@ export class HttpProductsApiClient implements ProductsServiceClient {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    // We expect the URL to the products service to be provided securely via ENV
+
     this.productsServiceUrl = this.configService.get<string>('PRODUCTS_SERVICE_URL') || 'http://localhost:3001/api/v1';
   }
 
@@ -34,7 +34,7 @@ export class HttpProductsApiClient implements ProductsServiceClient {
     } catch (error: any) {
       if (error.response?.status === 404) {
         this.logger.warn(`Product ${productId} not found`);
-        return null; // Return null predictably so the Use Case can throw InvalidOrderError
+        return null;
       }
       
       this.logger.error(`Failed to fetch product ${productId}: ${error.message}`);
