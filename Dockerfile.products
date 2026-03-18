@@ -19,7 +19,7 @@ COPY services/products-service ./services/products-service
 RUN npx --yes prisma generate --schema=services/products-service/src/prisma/schema.prisma
 
 # Compilar los proyectos
-RUN npm run build --workspace=@ecommerce/products-service
+RUN npm run build --workspace=products-service
 
 # Etapa de Producción
 FROM node:20-alpine

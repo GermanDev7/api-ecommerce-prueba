@@ -19,7 +19,7 @@ COPY services/orders-service ./services/orders-service
 RUN npx --yes prisma generate --schema=services/orders-service/src/prisma/schema.prisma
 
 # Compilar los proyectos
-RUN npm run build --workspace=@ecommerce/orders-service
+RUN npm run build --workspace=orders-service
 
 # Etapa de Producción
 FROM node:20-alpine

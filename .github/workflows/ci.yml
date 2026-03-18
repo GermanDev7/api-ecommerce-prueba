@@ -37,3 +37,30 @@ jobs:
         
     - name: Run Unit Tests
       run: npm run test:all
+
+    - name: Simulate Deployment (Docker Build)
+      run: |
+        docker build -t ecommerce/products-service -f Dockerfile.products .
+        docker build -t ecommerce/orders-service -f Dockerfile.orders .
+
+  release:
+    name: Generate Changelog & Bump Version
+    needs: quality-gate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Git User
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+      - name: Run Standard Version
+        run: npx standard-version
+        
+      - name: Push Git Tags and Changelog
+        run: git push --follow-tags origin main
