@@ -1,8 +1,38 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { ValidationPipe, Logger } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module.js';
+import { HttpExceptionFilter } from '@ecommerce/shared';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(process.env.PORT ?? 3000);
+  const logger = new Logger('ProductsService');
+
+  // Global validation pipe — validates all incoming DTOs
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,       // strips unknown properties
+      forbidNonWhitelisted: true,
+      transform: true,       // auto-transform payload types
+    }),
+  );
+
+  // Global exception filter — standardizes error responses
+  app.useGlobalFilters(new HttpExceptionFilter());
+
+  // Swagger docs at /api/docs
+  const config = new DocumentBuilder()
+    .setTitle('Products Service')
+    .setDescription('API for managing the product catalog')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
+
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port);
+  logger.log(`Products service running on port ${port}`);
+  logger.log(`Swagger docs: http://localhost:${port}/api/docs`);
 }
+
 bootstrap();

@@ -1,0 +1,22 @@
+import { Module } from '@nestjs/common';
+import { PrismaService } from './infrastructure/persistence/prisma.service.js';
+import { PrismaProductRepository } from './infrastructure/persistence/prisma-product.repository.js';
+import { PRODUCT_REPOSITORY } from './domain/repositories/product.repository.js';
+import { CreateProductUseCase } from './application/use-cases/create-product.use-case.js';
+import { ListProductsUseCase } from './application/use-cases/list-products.use-case.js';
+import { ProductController } from './presentation/controllers/product.controller.js';
+
+@Module({
+  controllers: [ProductController],
+  providers: [
+    PrismaService,
+    // Bind the port (interface) to the concrete adapter (Prisma)
+    {
+      provide: PRODUCT_REPOSITORY,
+      useClass: PrismaProductRepository,
+    },
+    CreateProductUseCase,
+    ListProductsUseCase,
+  ],
+})
+export class ProductsModule {}
