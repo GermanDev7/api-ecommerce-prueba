@@ -1,0 +1,13 @@
+{
+  "name": "ecommerce-prueba-2026",
+  "version": "1.0.0",
+  "main": "index.js",
+  "workspaces": [
+    "services/*",
+    "libs/*"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
