@@ -29,5 +29,6 @@ import { OrderController } from './presentation/controllers/order.controller.js'
     ListOrdersUseCase,
     GetOrderUseCase,
   ],
+  exports: [PrismaService],
 })
 export class OrdersModule {}

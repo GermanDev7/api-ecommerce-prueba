@@ -20,5 +20,6 @@ import { ProductController } from './presentation/controllers/product.controller
     ListProductsUseCase,
     GetProductUseCase,
   ],
+  exports: [PrismaService],
 })
 export class ProductsModule {}
