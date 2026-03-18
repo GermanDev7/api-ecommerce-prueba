@@ -15,10 +15,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js 20.x
+    - name: Setup Node.js 24.x
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: '24.x'
         cache: 'npm'
         
     - name: Install Dependencies
@@ -59,8 +59,8 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
-      - name: Run Standard Version
-        run: npx standard-version
+      - name: Run Semantic Release
+        run: npx commit-and-tag-version
         
       - name: Push Git Tags and Changelog
         run: git push --follow-tags origin main

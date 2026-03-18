@@ -107,10 +107,11 @@ Thumbs.db
 # NestJS build output
 dist/
 
-*.md
+
 *.txt
 !README.md
 !docs/**/*.md
+!CHANGELOG.md
 
 # Prisma Generated Client
 src/generated/
