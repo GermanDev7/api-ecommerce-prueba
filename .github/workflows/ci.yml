@@ -30,13 +30,10 @@ jobs:
         npx prisma generate --schema=services/orders-service/src/prisma/schema.prisma
         
     - name: Run Linter
-      run: npm run lint --workspaces --if-present
+      run: npm run lint:all
       
     - name: Build Modules
-      run: |
-        npm run build --workspace=@ecommerce/shared
-        npm run build --workspace=@ecommerce/products-service
-        npm run build --workspace=@ecommerce/orders-service
+      run: npm run build:all
         
     - name: Run Unit Tests
-      run: npm run test --workspaces --if-present
+      run: npm run test:all
