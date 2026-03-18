@@ -26,8 +26,8 @@ jobs:
       
     - name: Generate Prisma Clients
       run: |
-        npx --yes prisma generate --schema=services/products-service/src/prisma/schema.prisma
-        npx --yes prisma generate --schema=services/orders-service/src/prisma/schema.prisma
+        npx prisma generate --schema=services/products-service/src/prisma/schema.prisma
+        npx prisma generate --schema=services/orders-service/src/prisma/schema.prisma
         
     - name: Run Linter
       run: npm run lint --workspaces --if-present
