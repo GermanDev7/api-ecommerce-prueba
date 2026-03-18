@@ -13,13 +13,19 @@ describe('Order & OrderItem Entities', () => {
     });
 
     it('lanza error si quantity <= 0', () => {
-      expect(() => new OrderItem('prod-1', 0, 50)).toThrow('Quantity must be greater than zero');
-      expect(() => new OrderItem('prod-1', -5, 50)).toThrow('Quantity must be greater than zero');
+      expect(() => new OrderItem('prod-1', 0, 50)).toThrow(
+        'Quantity must be greater than zero',
+      );
+      expect(() => new OrderItem('prod-1', -5, 50)).toThrow(
+        'Quantity must be greater than zero',
+      );
     });
 
     it('lanza error si unitPrice < 0', () => {
       // El dominio restringe < 0, precio 0 está permitido para regalos/cupones 100%
-      expect(() => new OrderItem('prod-1', 1, -10)).toThrow('Unit price cannot be negative');
+      expect(() => new OrderItem('prod-1', 1, -10)).toThrow(
+        'Unit price cannot be negative',
+      );
     });
   });
 
@@ -44,7 +50,9 @@ describe('Order & OrderItem Entities', () => {
 
     it('lanza error o rechaza órdenes vacías sin items', () => {
       expect(() => Order.create([])).toThrow(InvalidOrderError);
-      expect(() => Order.create([])).toThrow('An order must contain at least one item');
+      expect(() => Order.create([])).toThrow(
+        'An order must contain at least one item',
+      );
     });
   });
 });

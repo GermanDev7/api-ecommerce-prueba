@@ -2,8 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Order } from '../../domain/entities/order.entity.js';
 import { OrderItem } from '../../domain/entities/order-item.entity.js';
 import { InvalidOrderError } from '../../domain/errors/order.errors.js';
-import { ORDER_REPOSITORY, type OrderRepository } from '../../domain/repositories/order.repository.js';
-import { PRODUCTS_SERVICE_CLIENT, type ProductsServiceClient } from '../ports/products-service.client.js';
+import {
+  ORDER_REPOSITORY,
+  type OrderRepository,
+} from '../../domain/repositories/order.repository.js';
+import {
+  PRODUCTS_SERVICE_CLIENT,
+  type ProductsServiceClient,
+} from '../ports/products-service.client.js';
 import type { CreateOrderDto } from '../../presentation/dtos/create-order.dto.js';
 
 @Injectable()
@@ -19,21 +25,33 @@ export class CreateOrderUseCase {
     const orderItems: OrderItem[] = [];
 
     for (const itemDto of dto.items) {
-      const product = await this.productsClient.getProductDetails(itemDto.productId);
-      
+      const product = await this.productsClient.getProductDetails(
+        itemDto.productId,
+      );
+
       if (!product) {
-        throw new InvalidOrderError(`Product with ID ${itemDto.productId} does not exist`);
+        throw new InvalidOrderError(
+          `Product with ID ${itemDto.productId} does not exist`,
+        );
       }
 
       if (product.status !== 'ACTIVE') {
-        throw new InvalidOrderError(`Product with ID ${itemDto.productId} is inactive`);
+        throw new InvalidOrderError(
+          `Product with ID ${itemDto.productId} is inactive`,
+        );
       }
 
       if (product.stock < itemDto.quantity) {
-        throw new InvalidOrderError(`Insufficient stock for product ${itemDto.productId}. Available: ${product.stock}`);
+        throw new InvalidOrderError(
+          `Insufficient stock for product ${itemDto.productId}. Available: ${product.stock}`,
+        );
       }
 
-      const orderItem = new OrderItem(itemDto.productId, itemDto.quantity, product.price);
+      const orderItem = new OrderItem(
+        itemDto.productId,
+        itemDto.quantity,
+        product.price,
+      );
       orderItems.push(orderItem);
     }
 

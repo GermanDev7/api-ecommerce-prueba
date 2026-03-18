@@ -33,4 +33,5 @@ async function bootstrap() {
   logger.log(`Orders service running on port ${port}`);
   logger.log(`Swagger docs: http://localhost:${port}/api/docs`);
 }
-bootstrap();
+
+void bootstrap();

@@ -42,14 +42,30 @@ export class Product {
     return new Product(props, id);
   }
 
-  get id(): string { return this._id; }
-  get name(): string { return this.props.name; }
-  get description(): string | undefined { return this.props.description; }
-  get price(): number { return this.props.price; }
-  get stock(): number { return this.props.stock; }
-  get status(): ProductStatus { return this.props.status; }
-  get createdAt(): Date { return this.props.createdAt; }
-  get updatedAt(): Date { return this.props.updatedAt; }
+  get id(): string {
+    return this._id;
+  }
+  get name(): string {
+    return this.props.name;
+  }
+  get description(): string | undefined {
+    return this.props.description;
+  }
+  get price(): number {
+    return this.props.price;
+  }
+  get stock(): number {
+    return this.props.stock;
+  }
+  get status(): ProductStatus {
+    return this.props.status;
+  }
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
 
   hasStock(quantity: number): boolean {
     return this.props.stock >= quantity;

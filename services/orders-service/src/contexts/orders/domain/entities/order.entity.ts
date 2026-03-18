@@ -36,14 +36,27 @@ export class Order {
     return new Order(props, id);
   }
 
-  get id(): string { return this._id; }
-  get status(): OrderStatus { return this.props.status; }
-  get items(): ReadonlyArray<OrderItem> { return this.props.items; }
-  get createdAt(): Date { return this.props.createdAt; }
-  get updatedAt(): Date { return this.props.updatedAt; }
+  get id(): string {
+    return this._id;
+  }
+  get status(): OrderStatus {
+    return this.props.status;
+  }
+  get items(): ReadonlyArray<OrderItem> {
+    return this.props.items;
+  }
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+  get updatedAt(): Date {
+    return this.props.updatedAt;
+  }
 
   get totalAmount(): number {
-    const total = this.props.items.reduce((sum, item) => sum + item.subtotal, 0);
+    const total = this.props.items.reduce(
+      (sum, item) => sum + item.subtotal,
+      0,
+    );
     return Math.round(total * 100) / 100;
   }
 

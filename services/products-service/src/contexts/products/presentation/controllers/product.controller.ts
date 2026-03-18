@@ -7,7 +7,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { CreateProductUseCase } from '../../application/use-cases/create-product.use-case.js';
 import { ListProductsUseCase } from '../../application/use-cases/list-products.use-case.js';
 import { GetProductUseCase } from '../../application/use-cases/get-product.use-case.js';

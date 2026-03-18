@@ -27,9 +27,12 @@ export class OrderController {
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new order' })
   @ApiResponse({ status: 201, description: 'Order created successfully' })
-  @ApiResponse({ status: 400, description: 'Invalid input data or business rule violation (e.g., out of stock)' })
+  @ApiResponse({
+    status: 400,
+    description:
+      'Invalid input data or business rule violation (e.g., out of stock)',
+  })
   async create(@Body() dto: CreateOrderDto): Promise<OrderResponse> {
-
     const order = await this.createOrderUseCase.execute(dto);
     return toResponse(order);
   }
