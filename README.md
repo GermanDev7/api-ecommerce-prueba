@@ -80,7 +80,11 @@ Esto asegura aislamiento lógico entre clientes: un usuario no puede consultar n
 La identidad del cliente se obtiene a partir del **JWT** enviado en la solicitud.
 
 ### Documentación adicional anexa
-- **[Diagrama Entidad-Relación (MER)](/docs/diagrama-er.md)**
+
+En la carpeta `docs` se encuentra la documentación adicional:
+
+- Diagrama Entidad-Relación (MER)
+- Diseño de la arquitectura
 
 ---
 
