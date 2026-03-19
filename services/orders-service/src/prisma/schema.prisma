@@ -10,6 +10,7 @@ datasource db {
 
 model Order {
   id        String      @id @default(uuid())
+  userId    String      @map("user_id")
   status    OrderStatus @default(PENDING)
   items     OrderItem[]
   createdAt DateTime    @default(now()) @map("created_at")

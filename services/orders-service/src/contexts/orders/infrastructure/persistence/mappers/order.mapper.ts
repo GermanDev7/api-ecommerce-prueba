@@ -21,6 +21,7 @@ export class OrderMapper {
 
     return OrderEntity.reconstitute(
       {
+        userId: raw.userId,
         status: raw.status as 'PENDING' | 'CONFIRMED' | 'CANCELLED',
         items,
         createdAt: raw.createdAt,
@@ -33,6 +34,7 @@ export class OrderMapper {
   static toPersistence(order: OrderEntity): PrismaOrderWithItems {
     return {
       id: order.id,
+      userId: order.userId,
       status: order.status,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,

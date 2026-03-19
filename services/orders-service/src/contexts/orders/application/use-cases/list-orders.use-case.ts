@@ -12,8 +12,12 @@ export class ListOrdersUseCase {
     private readonly orderRepository: OrderRepository,
   ) {}
 
-  async execute(page: number = 1, limit: number = 10): Promise<[Order[], number]> {
+  async execute(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[Order[], number]> {
     const skip = (page - 1) * limit;
-    return this.orderRepository.findAll(skip, limit);
+    return this.orderRepository.findAll(userId, skip, limit);
   }
 }

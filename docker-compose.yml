@@ -33,6 +33,23 @@ services:
       timeout: 5s
       retries: 5
 
+  auth-db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: auth
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5436:5432"
+    volumes:
+      - auth-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   products-service:
     build:
       context: .
@@ -67,6 +84,21 @@ services:
       products-service:
         condition: service_started
 
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.auth
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=production
+      - PORT=3003
+      - JWT_SECRET=super-secret-key-for-test-only
+      - DATABASE_URL=postgresql://postgres:rootpassword@auth-db:5432/auth?schema=public
+    depends_on:
+      auth-db:
+        condition: service_healthy
+
   api-gateway:
     image: nginx:alpine
     ports:
@@ -76,7 +108,9 @@ services:
     depends_on:
       - products-service
       - orders-service
+      - auth-service
 
 volumes:
   products-data:
   orders-data:
+  auth-data:

@@ -25,8 +25,8 @@ export class Product {
     price: number;
     stock: number;
   }): Product {
-    if (input.stock < 0) throw new Error('Stock cannot be negative');
-    if (input.price <= 0) throw new Error('Price must be greater than zero');
+    if (input.stock < 0) throw new Error('El stock no puede ser negativo');
+    if (input.price <= 0) throw new Error('El precio debe ser mayor a cero');
     return new Product({
       name: input.name,
       description: input.description,

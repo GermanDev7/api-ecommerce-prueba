@@ -5,9 +5,10 @@ export class OrderNotFoundError extends Error {
   }
 }
 
-export class InvalidOrderError extends Error {
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+export class InvalidOrderError extends HttpException {
   constructor(message: string) {
-    super(message);
-    this.name = 'InvalidOrderError';
+    super(message, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }

@@ -4,6 +4,7 @@ export interface ProductRepository {
   save(product: Product): Promise<Product>;
   findAll(skip?: number, take?: number): Promise<[Product[], number]>;
   findById(id: string): Promise<Product | null>;
+  deductStock(id: string, quantity: number): Promise<void>;
 }
 
 export const PRODUCT_REPOSITORY = 'PRODUCT_REPOSITORY';

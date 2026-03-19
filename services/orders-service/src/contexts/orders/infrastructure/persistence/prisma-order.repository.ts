@@ -14,6 +14,7 @@ export class PrismaOrderRepository implements OrderRepository {
     const saved = await this.prisma.order.create({
       data: {
         id: data.id,
+        userId: data.userId,
         status: data.status,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
@@ -32,15 +33,20 @@ export class PrismaOrderRepository implements OrderRepository {
     return OrderMapper.toDomain(saved);
   }
 
-  async findAll(skip?: number, take?: number): Promise<[Order[], number]> {
+  async findAll(
+    userId: string,
+    skip?: number,
+    take?: number,
+  ): Promise<[Order[], number]> {
     const [orders, total] = await Promise.all([
       this.prisma.order.findMany({
+        where: { userId },
         skip,
         take,
         include: { items: true },
         orderBy: { createdAt: 'desc' },
       }),
-      this.prisma.order.count(),
+      this.prisma.order.count({ where: { userId } }),
     ]);
     return [orders.map(OrderMapper.toDomain), total];
   }

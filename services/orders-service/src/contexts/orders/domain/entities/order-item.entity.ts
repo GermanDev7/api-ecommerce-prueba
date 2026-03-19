@@ -7,8 +7,9 @@ export class OrderItem {
     public readonly unitPrice: number,
     id?: string,
   ) {
-    if (quantity <= 0) throw new Error('Quantity must be greater than zero');
-    if (unitPrice < 0) throw new Error('Unit price cannot be negative');
+    if (quantity <= 0) throw new Error('La cantidad debe ser mayor a cero');
+    if (unitPrice < 0)
+      throw new Error('El precio unitario no puede ser negativo');
     this._id = id ?? crypto.randomUUID();
   }
 

@@ -30,4 +30,11 @@ export class PrismaProductRepository implements ProductRepository {
     const product = await this.prisma.product.findUnique({ where: { id } });
     return product ? ProductMapper.toDomain(product) : null;
   }
+
+  async deductStock(id: string, quantity: number): Promise<void> {
+    await this.prisma.product.update({
+      where: { id },
+      data: { stock: { decrement: quantity } },
+    });
+  }
 }

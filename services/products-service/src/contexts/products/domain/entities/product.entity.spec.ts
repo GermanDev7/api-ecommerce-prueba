@@ -18,17 +18,17 @@ describe('Product Entity', () => {
   it('debe lanzar un Error si se intenta inicializar con precio negativo o nulo', () => {
     expect(() => {
       Product.create({ name: 'Test', price: 0, stock: 10 });
-    }).toThrow('Price must be greater than zero');
+    }).toThrow('El precio debe ser mayor a cero');
 
     expect(() => {
       Product.create({ name: 'Test', price: -5, stock: 10 });
-    }).toThrow('Price must be greater than zero');
+    }).toThrow('El precio debe ser mayor a cero');
   });
 
   it('debe lanzar un Error si se pasa un inventario (stock) negativo', () => {
     expect(() => {
       Product.create({ name: 'Test', price: 100, stock: -1 });
-    }).toThrow('Stock cannot be negative');
+    }).toThrow('El stock no puede ser negativo');
   });
 
   it('debe retornar true en hasStock(qty) cuando qty < stock', () => {

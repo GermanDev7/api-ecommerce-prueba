@@ -52,7 +52,26 @@ export class HttpProductsApiClient implements ProductsServiceClient {
       this.logger.error(
         `Failed to fetch product ${productId}: ${error.message}`,
       );
-      throw new Error(`Products service is unavailable: ${error.message}`);
+      throw new Error(
+        `El servicio de productos no está disponible: ${error.message}`,
+      );
+    }
+  }
+
+  async deductStock(productId: string, quantity: number): Promise<void> {
+    try {
+      this.logger.debug(`Deducting stock ${quantity} for product ${productId}`);
+      await firstValueFrom(
+        this.httpService.patch(
+          `${this.productsServiceUrl}/products/${productId}/stock`,
+          { quantity },
+        ),
+      );
+    } catch (e: unknown) {
+      const error = e as import('axios').AxiosError;
+      this.logger.error(
+        `Failed to deduct stock for product ${productId}: ${error.message}`,
+      );
     }
   }
 }

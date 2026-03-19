@@ -7,16 +7,30 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CreateOrderUseCase } from '../../application/use-cases/create-order.use-case.js';
 import { ListOrdersUseCase } from '../../application/use-cases/list-orders.use-case.js';
 import { GetOrderUseCase } from '../../application/use-cases/get-order.use-case.js';
 import { CreateOrderDto } from '../dtos/create-order.dto.js';
-import { PaginationDto } from '@ecommerce/shared';
+import { JwtAuthGuard, PaginationDto, CurrentUser } from '@ecommerce/shared';
 import type { Order } from '../../domain/entities/order.entity.js';
 
+interface JwtTokenPayload {
+  sub: string;
+  email: string;
+  role: string;
+}
+
 @ApiTags('Orders')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('api/v1/orders')
 export class OrderController {
   constructor(
@@ -34,8 +48,11 @@ export class OrderController {
     description:
       'Invalid input data or business rule violation (e.g., out of stock)',
   })
-  async create(@Body() dto: CreateOrderDto): Promise<OrderResponse> {
-    const order = await this.createOrderUseCase.execute(dto);
+  async create(
+    @CurrentUser() user: JwtTokenPayload,
+    @Body() dto: CreateOrderDto,
+  ): Promise<OrderResponse> {
+    const order = await this.createOrderUseCase.execute(user.sub, dto);
     return toResponse(order);
   }
 
@@ -44,10 +61,20 @@ export class OrderController {
   @ApiOperation({ summary: 'List all orders' })
   @ApiResponse({ status: 200, description: 'Orders listed successfully' })
   async findAll(
+    @CurrentUser() user: JwtTokenPayload,
     @Query() paginationDto: PaginationDto,
-  ): Promise<{ data: OrderResponse[]; total: number; page: number; lastPage: number }> {
+  ): Promise<{
+    data: OrderResponse[];
+    total: number;
+    page: number;
+    lastPage: number;
+  }> {
     const { page = 1, limit = 10 } = paginationDto;
-    const [orders, total] = await this.listOrdersUseCase.execute(page, limit);
+    const [orders, total] = await this.listOrdersUseCase.execute(
+      user.sub,
+      page,
+      limit,
+    );
     return {
       data: orders.map(toResponse),
       total,
@@ -61,8 +88,11 @@ export class OrderController {
   @ApiOperation({ summary: 'Get an order by ID' })
   @ApiResponse({ status: 200, description: 'Order found successfully' })
   @ApiResponse({ status: 404, description: 'Order not found' })
-  async findOne(@Param('id') id: string): Promise<OrderResponse> {
-    const order = await this.getOrderUseCase.execute(id);
+  async findOne(
+    @CurrentUser() user: JwtTokenPayload,
+    @Param('id') id: string,
+  ): Promise<OrderResponse> {
+    const order = await this.getOrderUseCase.execute(user.sub, id);
     return toResponse(order);
   }
 }

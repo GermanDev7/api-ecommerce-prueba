@@ -21,7 +21,7 @@ export class CreateOrderUseCase {
     private readonly productsClient: ProductsServiceClient,
   ) {}
 
-  async execute(dto: CreateOrderDto): Promise<Order> {
+  async execute(userId: string, dto: CreateOrderDto): Promise<Order> {
     const orderItems: OrderItem[] = [];
 
     for (const itemDto of dto.items) {
@@ -31,19 +31,19 @@ export class CreateOrderUseCase {
 
       if (!product) {
         throw new InvalidOrderError(
-          `Product with ID ${itemDto.productId} does not exist`,
+          `El producto con ID ${itemDto.productId} no existe`,
         );
       }
 
       if (product.status !== 'ACTIVE') {
         throw new InvalidOrderError(
-          `Product with ID ${itemDto.productId} is inactive`,
+          `El producto con ID ${itemDto.productId} está inactivo`,
         );
       }
 
       if (product.stock < itemDto.quantity) {
         throw new InvalidOrderError(
-          `Insufficient stock for product ${itemDto.productId}. Available: ${product.stock}`,
+          `Stock insuficiente para el producto ${itemDto.productId}. Disponible: ${product.stock}`,
         );
       }
 
@@ -55,7 +55,18 @@ export class CreateOrderUseCase {
       orderItems.push(orderItem);
     }
 
-    const order = Order.create(orderItems);
-    return this.orderRepository.save(order);
+    const order = Order.create(userId, orderItems);
+    const savedOrder = await this.orderRepository.save(order);
+
+    // Ejecutar deducción de stock asíncronamente (Fire and Forget)
+    for (const itemDto of dto.items) {
+      this.productsClient
+        .deductStock(itemDto.productId, itemDto.quantity)
+        .catch((err) => {
+          console.error(`Error deduct stock side-effect:`, err);
+        });
+    }
+
+    return savedOrder;
   }
 }

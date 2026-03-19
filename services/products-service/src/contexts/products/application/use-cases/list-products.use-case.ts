@@ -12,7 +12,10 @@ export class ListProductsUseCase {
     private readonly productRepository: ProductRepository,
   ) {}
 
-  async execute(page: number = 1, limit: number = 10): Promise<[Product[], number]> {
+  async execute(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[Product[], number]> {
     const skip = (page - 1) * limit;
     return this.productRepository.findAll(skip, limit);
   }

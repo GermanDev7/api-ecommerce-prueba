@@ -22,6 +22,7 @@ describe('CreateOrderUseCase', () => {
     // El puerto inyectado para comunicarse con Productos
     mockProductsClient = {
       getProductDetails: jest.fn(),
+      deductStock: jest.fn(),
     };
 
     useCase = new CreateOrderUseCase(mockOrderRepository, mockProductsClient);
@@ -40,7 +41,7 @@ describe('CreateOrderUseCase', () => {
       Promise.resolve(o as any),
     );
 
-    await useCase.execute({ items: [{ productId: 'prod-1', quantity: 1 }] });
+    await useCase.execute('user-idx', { items: [{ productId: 'prod-1', quantity: 1 }] });
 
     expect(mockProductsClient.getProductDetails).toHaveBeenCalledWith('prod-1');
   });
@@ -51,7 +52,7 @@ describe('CreateOrderUseCase', () => {
       Promise.resolve(o as any),
     );
 
-    await useCase.execute({
+    await useCase.execute('user-idx', {
       items: [{ productId: 'prod-1', quantity: 2 }],
     });
 
@@ -64,7 +65,7 @@ describe('CreateOrderUseCase', () => {
     mockProductsClient.getProductDetails.mockResolvedValue(null);
 
     await expect(
-      useCase.execute({ items: [{ productId: 'ghost-prod', quantity: 1 }] }),
+      useCase.execute('user-idx', { items: [{ productId: 'ghost-prod', quantity: 1 }] }),
     ).rejects.toThrow(InvalidOrderError);
 
     expect(mockOrderRepository.save).not.toHaveBeenCalled();
@@ -77,12 +78,12 @@ describe('CreateOrderUseCase', () => {
     });
 
     await expect(
-      useCase.execute({ items: [{ productId: 'prod-1', quantity: 6 }] }),
+      useCase.execute('user-idx', { items: [{ productId: 'prod-1', quantity: 6 }] }),
     ).rejects.toThrow(InvalidOrderError);
 
     await expect(
-      useCase.execute({ items: [{ productId: 'prod-1', quantity: 6 }] }),
-    ).rejects.toThrow('Insufficient stock for product prod-1. Available: 5');
+      useCase.execute('user-idx', { items: [{ productId: 'prod-1', quantity: 6 }] }),
+    ).rejects.toThrow('Stock insuficiente para el producto prod-1. Disponible: 5');
 
     expect(mockOrderRepository.save).not.toHaveBeenCalled();
   });
@@ -96,7 +97,7 @@ describe('CreateOrderUseCase', () => {
       Promise.resolve(o as any),
     );
 
-    await useCase.execute({ items: [{ productId: 'prod-1', quantity: 1 }] });
+    await useCase.execute('user-idx', { items: [{ productId: 'prod-1', quantity: 1 }] });
 
     const savedOrder = mockOrderRepository.save.mock.calls[0][0];
     const savedItem = savedOrder.items[0];
@@ -107,12 +108,12 @@ describe('CreateOrderUseCase', () => {
   it('propaga un error técnico si productsApiClient falla por indisponibilidad del servicio', async () => {
     // Simulamos caída de la subred o 500 Interno
     mockProductsClient.getProductDetails.mockRejectedValue(
-      new Error('Products service is unavailable'),
+      new Error('El servicio de productos no está disponible'),
     );
 
     await expect(
-      useCase.execute({ items: [{ productId: 'prod-1', quantity: 1 }] }),
-    ).rejects.toThrow('Products service is unavailable');
+      useCase.execute('user-idx', { items: [{ productId: 'prod-1', quantity: 1 }] }),
+    ).rejects.toThrow('El servicio de productos no está disponible');
 
     expect(mockOrderRepository.save).not.toHaveBeenCalled();
   });
@@ -139,7 +140,7 @@ describe('CreateOrderUseCase', () => {
       Promise.resolve(o as any),
     );
 
-    await useCase.execute({
+    await useCase.execute('user-idx', {
       items: [
         { productId: 'prod-1', quantity: 5 },
         { productId: 'prod-2', quantity: 2 },
@@ -154,7 +155,7 @@ describe('CreateOrderUseCase', () => {
   });
 
   it('rechaza o lanza error cuando el request de una orden llega completamente vacía', async () => {
-    await expect(useCase.execute({ items: [] })).rejects.toThrow(
+    await expect(useCase.execute('user-idx', { items: [] })).rejects.toThrow(
       InvalidOrderError,
     );
 

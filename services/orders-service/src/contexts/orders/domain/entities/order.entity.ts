@@ -4,6 +4,7 @@ import { InvalidOrderError } from '../errors/order.errors.js';
 import { OrderStatus } from '../enums/order-status.enum.js';
 
 export interface OrderProps {
+  userId: string;
   status: OrderStatus;
   items: OrderItem[];
   createdAt: Date;
@@ -19,12 +20,15 @@ export class Order {
     this.props = props;
   }
 
-  static create(items: OrderItem[]): Order {
+  static create(userId: string, items: OrderItem[]): Order {
     if (!items || items.length === 0) {
-      throw new InvalidOrderError('An order must contain at least one item');
+      throw new InvalidOrderError(
+        'Una orden debe contener al menos un artículo',
+      );
     }
 
     return new Order({
+      userId,
       status: 'PENDING',
       items,
       createdAt: new Date(),
@@ -38,6 +42,9 @@ export class Order {
 
   get id(): string {
     return this._id;
+  }
+  get userId(): string {
+    return this.props.userId;
   }
   get status(): OrderStatus {
     return this.props.status;
@@ -62,7 +69,9 @@ export class Order {
 
   confirm(): void {
     if (this.props.status !== 'PENDING') {
-      throw new InvalidOrderError('Only pending orders can be confirmed');
+      throw new InvalidOrderError(
+        'Solo las órdenes pendientes pueden ser confirmadas',
+      );
     }
     this.props.status = 'CONFIRMED';
     this.props.updatedAt = new Date();

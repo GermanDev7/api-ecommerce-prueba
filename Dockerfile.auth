@@ -1,0 +1,51 @@
+# Etapa de compilación
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copiar configuraciones y metadatos de NPM Workspaces
+COPY package*.json ./
+COPY libs/shared/package*.json ./libs/shared/
+COPY services/auth-service/package*.json ./services/auth-service/
+
+# Instalar dependencias (NPM instalará todo y hará hoisting al root)
+RUN npm install
+
+# Copiar el código fuente completo
+COPY libs/shared ./libs/shared
+COPY services/auth-service ./services/auth-service
+
+# Compilar la librería compartida
+RUN npm run build --workspace=@ecommerce/shared
+
+# Generar el cliente Prisma (Localizado)
+RUN npx --yes prisma generate --schema=services/auth-service/src/prisma/schema.prisma
+
+# Compilar el servicio
+RUN npm run build --workspace=@ecommerce/auth-service
+
+# Etapa de Producción
+FROM node:20-alpine
+
+WORKDIR /app
+ENV NODE_ENV=production
+
+COPY package*.json ./
+COPY libs/shared/package*.json ./libs/shared/
+COPY services/auth-service/package*.json ./services/auth-service/
+RUN npm install --omit=dev
+
+# Librería compartida compilada
+COPY --from=builder /app/libs/shared/dist ./libs/shared/dist
+
+# Archivos compilados y directorios Prisma generados
+COPY --from=builder /app/services/auth-service/dist ./services/auth-service/dist
+COPY --from=builder /app/node_modules/@ecommerce ./node_modules/@ecommerce
+COPY --from=builder /app/services/auth-service/src/prisma ./services/auth-service/src/prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Puerto y Comando
+EXPOSE 3003
+RUN chown -R node:node /app
+USER node
+CMD npx prisma migrate deploy --schema=services/auth-service/src/prisma/schema.prisma && node services/auth-service/src/prisma/seed.js && node services/auth-service/dist/main.js

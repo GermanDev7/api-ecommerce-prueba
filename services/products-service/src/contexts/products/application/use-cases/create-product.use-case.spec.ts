@@ -11,6 +11,7 @@ describe('CreateProductUseCase', () => {
       save: jest.fn(),
       findById: jest.fn(),
       findAll: jest.fn(),
+      deductStock: jest.fn(),
     };
     useCase = new CreateProductUseCase(mockRepository);
   });
@@ -46,7 +47,7 @@ describe('CreateProductUseCase', () => {
 
     // Comprueba que el UseCase escupa el error sin tragarlo y no guarde nada
     await expect(useCase.execute(invalidDto)).rejects.toThrow(
-      'Price must be greater than zero',
+      'El precio debe ser mayor a cero',
     );
     expect(mockRepository.save).not.toHaveBeenCalled();
   });

@@ -13,10 +13,10 @@ export class GetOrderUseCase {
     private readonly orderRepository: OrderRepository,
   ) {}
 
-  async execute(id: string): Promise<Order> {
+  async execute(userId: string, id: string): Promise<Order> {
     const order = await this.orderRepository.findById(id);
-    if (!order) {
-      throw new OrderNotFoundError(`Order with ID ${id} not found`);
+    if (!order || order.userId !== userId) {
+      throw new OrderNotFoundError(`La orden con ID ${id} no fue encontrada`);
     }
     return order;
   }

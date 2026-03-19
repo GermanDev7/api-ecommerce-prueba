@@ -16,7 +16,9 @@ export class GetProductUseCase {
   async execute(id: string): Promise<Product> {
     const product = await this.productRepository.findById(id);
     if (!product) {
-      throw new ProductNotFoundError(`Product with ID ${id} not found`);
+      throw new ProductNotFoundError(
+        `El producto con ID ${id} no fue encontrado`,
+      );
     }
     return product;
   }
