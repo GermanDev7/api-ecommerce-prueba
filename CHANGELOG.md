@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.3](https://github.com/GermanDev7/api-ecommerce-prueba/compare/v1.3.2...v1.3.3) (2026-03-19)
+
+
+### Bug Fixes
+
+* **docs:** aggregate unified Swagger UI dropdown ([56e9d60](https://github.com/GermanDev7/api-ecommerce-prueba/commit/56e9d600f916ee078f6c7669dfe5cd42e35f3a43))
+
 ## [1.3.2](https://github.com/GermanDev7/api-ecommerce-prueba/compare/v1.3.1...v1.3.2) (2026-03-19)
 
 
