@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { CreateProductUseCase } from '../../application/use-cases/create-product
 import { ListProductsUseCase } from '../../application/use-cases/list-products.use-case.js';
 import { GetProductUseCase } from '../../application/use-cases/get-product.use-case.js';
 import { CreateProductDto } from '../dtos/create-product.dto.js';
+import { PaginationDto } from '@ecommerce/shared';
 import type { Product } from '../../domain/entities/product.entity.js';
 
 @ApiTags('Products')
@@ -42,9 +44,17 @@ export class ProductController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'List all products' })
   @ApiResponse({ status: 200, description: 'Products listed successfully' })
-  async findAll(): Promise<{ data: ProductResponse[]; total: number }> {
-    const products = await this.listProductsUseCase.execute();
-    return { data: products.map(toResponse), total: products.length };
+  async findAll(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<{ data: ProductResponse[]; total: number; page: number; lastPage: number }> {
+    const { page = 1, limit = 10 } = paginationDto;
+    const [products, total] = await this.listProductsUseCase.execute(page, limit);
+    return {
+      data: products.map(toResponse),
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   @Get(':id')

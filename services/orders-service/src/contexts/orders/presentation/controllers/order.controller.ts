@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -12,6 +13,7 @@ import { CreateOrderUseCase } from '../../application/use-cases/create-order.use
 import { ListOrdersUseCase } from '../../application/use-cases/list-orders.use-case.js';
 import { GetOrderUseCase } from '../../application/use-cases/get-order.use-case.js';
 import { CreateOrderDto } from '../dtos/create-order.dto.js';
+import { PaginationDto } from '@ecommerce/shared';
 import type { Order } from '../../domain/entities/order.entity.js';
 
 @ApiTags('Orders')
@@ -41,9 +43,17 @@ export class OrderController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'List all orders' })
   @ApiResponse({ status: 200, description: 'Orders listed successfully' })
-  async findAll(): Promise<{ data: OrderResponse[]; total: number }> {
-    const orders = await this.listOrdersUseCase.execute();
-    return { data: orders.map(toResponse), total: orders.length };
+  async findAll(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<{ data: OrderResponse[]; total: number; page: number; lastPage: number }> {
+    const { page = 1, limit = 10 } = paginationDto;
+    const [orders, total] = await this.listOrdersUseCase.execute(page, limit);
+    return {
+      data: orders.map(toResponse),
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
   }
 
   @Get(':id')

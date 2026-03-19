@@ -14,11 +14,16 @@ export class PrismaProductRepository implements ProductRepository {
     return ProductMapper.toDomain(saved);
   }
 
-  async findAll(): Promise<Product[]> {
-    const products = await this.prisma.product.findMany({
-      orderBy: { createdAt: 'desc' },
-    });
-    return products.map(ProductMapper.toDomain);
+  async findAll(skip?: number, take?: number): Promise<[Product[], number]> {
+    const [products, total] = await Promise.all([
+      this.prisma.product.findMany({
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.product.count(),
+    ]);
+    return [products.map(ProductMapper.toDomain), total];
   }
 
   async findById(id: string): Promise<Product | null> {

@@ -12,7 +12,8 @@ export class ListProductsUseCase {
     private readonly productRepository: ProductRepository,
   ) {}
 
-  async execute(): Promise<Product[]> {
-    return this.productRepository.findAll();
+  async execute(page: number = 1, limit: number = 10): Promise<[Product[], number]> {
+    const skip = (page - 1) * limit;
+    return this.productRepository.findAll(skip, limit);
   }
 }

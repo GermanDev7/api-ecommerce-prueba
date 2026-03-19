@@ -46,4 +46,4 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 # Puerto y Comando
 EXPOSE 3002
-CMD ["node", "services/orders-service/dist/main.js"]
+CMD npx --yes prisma db push --schema=services/orders-service/src/prisma/schema.prisma --accept-data-loss && node services/orders-service/dist/main.js
