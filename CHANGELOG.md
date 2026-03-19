@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.3.0](https://github.com/GermanDev7/api-ecommerce-prueba/compare/v1.2.0...v1.3.0) (2026-03-19)
+
+
+### Features
+
+* **core:** implement  refactoring- Fix Jest unit tests by virtualizing module mappings and decoupling use cases- Standardize business domain exceptions mapped to HTTP 422 Unprocessable Entity- Enhance Postman configurations - Adapt production databases to Prisma migrate deploy replacing db push- Enforce strict Order tenant isolation using stateless JWT properties- Bootstrap default environments via Prisma seeding - Expand NPM workspace definitions enforcing 'start:fresh' evaluation macro- Finalize localized error string mappings mirroring strictly typed domain errors ([fd5d81b](https://github.com/GermanDev7/api-ecommerce-prueba/commit/fd5d81b3cf616f9baeb256bdad34457933d91d5e))
+* **core:** implement shared pagination, env templates, and automated docker database migrations ([81291ea](https://github.com/GermanDev7/api-ecommerce-prueba/commit/81291ea7db83fc788dd4c23d96dd327d1dc85efb))
+* **core:** implement shared pagination, env templates, and automated docker database migrations ([d534209](https://github.com/GermanDev7/api-ecommerce-prueba/commit/d534209b7dd54351a203261e9eec67dffefee5be))
+
+
+### Bug Fixes
+
+* **ci:** switch from npm ci to npm install and update package lock ([d2d8c90](https://github.com/GermanDev7/api-ecommerce-prueba/commit/d2d8c9008379840ecc9ed8d4b33947b4ddb88819))
+* **core:** export PrismaService to resolve DI failures in HealthController ([ae42ac6](https://github.com/GermanDev7/api-ecommerce-prueba/commit/ae42ac62540b2aaa8cb0026b1a9e96fc3434dded))
+* **prisma:** scope generated client paths to resolve module not found errors ([7412794](https://github.com/GermanDev7/api-ecommerce-prueba/commit/7412794e8fa5328235a56ae4c720668b6852afdd))
+
 ## 1.2.0 (2026-03-18)
 
 
