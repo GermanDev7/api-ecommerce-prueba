@@ -16,9 +16,9 @@
     "stop": "docker-compose down",
     "start:fresh": "docker-compose down -v && docker-compose up -d --build",
     "test:all": "npm run test --workspaces --if-present",
-    "build:all": "npm run build --workspaces --if-present",
+    "build:all": "npm run build --workspace=@ecommerce/shared && npm run build --workspaces --if-present",
     "lint:all": "npm run lint --workspaces --if-present",
-    "postinstall": "npx prisma generate --schema=services/products-service/src/prisma/schema.prisma && npx prisma generate --schema=services/orders-service/src/prisma/schema.prisma || true"
+    "postinstall": "npx prisma generate --schema=services/auth-service/src/prisma/schema.prisma && npx prisma generate --schema=services/products-service/src/prisma/schema.prisma && npx prisma generate --schema=services/orders-service/src/prisma/schema.prisma || true"
   },
   "dependencies": {
     "@nestjs/platform-express": "^11.1.17",

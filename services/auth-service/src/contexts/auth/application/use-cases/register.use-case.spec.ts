@@ -1,12 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { RegisterUseCase } from './register.use-case.js';
 import { UserRepository } from '../../domain/repositories/user.repository.js';
 import { ConflictException } from '@nestjs/common';
 
-jest.mock('bcrypt', () => ({
-  genSalt: jest.fn().mockResolvedValue('randomSalt'),
-  hash: jest.fn().mockResolvedValue('hashedPassword123'),
-  compare: jest.fn().mockResolvedValue(true),
-}), { virtual: true });
+jest.mock(
+  'bcrypt',
+  () => ({
+    genSalt: jest.fn().mockResolvedValue('randomSalt'),
+    hash: jest.fn().mockResolvedValue('hashedPassword123'),
+    compare: jest.fn().mockResolvedValue(true),
+  }),
+  { virtual: true },
+);
 
 describe('RegisterUseCase', () => {
   let useCase: RegisterUseCase;
@@ -35,7 +40,14 @@ describe('RegisterUseCase', () => {
   });
 
   it('debe lanzar ConflictException si el email ya existe', async () => {
-    mockRepository.findByEmail.mockResolvedValue({ id: '1', email: 'test@test.com', passwordHash: 'hash', role: 'CUSTOMER', createdAt: new Date(), updatedAt: new Date() } as any);
+    mockRepository.findByEmail.mockResolvedValue({
+      id: '1',
+      email: 'test@test.com',
+      passwordHash: 'hash',
+      role: 'CUSTOMER',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as any);
 
     await expect(
       useCase.execute({ email: 'test@test.com', password: 'pwd' }),
