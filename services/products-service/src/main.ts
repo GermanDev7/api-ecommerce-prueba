@@ -24,7 +24,16 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api/docs', app, document, {
+    explorer: true,
+    swaggerOptions: {
+      urls: [
+        { url: '/api/v1/products/docs-json', name: 'Products API' },
+        { url: '/api/v1/orders/docs-json', name: 'Orders API' },
+        { url: '/api/v1/auth/docs-json', name: 'Auth API' },
+      ],
+    },
+  });
 
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
