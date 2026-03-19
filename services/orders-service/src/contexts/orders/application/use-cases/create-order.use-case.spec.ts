@@ -22,7 +22,7 @@ describe('CreateOrderUseCase', () => {
     // El puerto inyectado para comunicarse con Productos
     mockProductsClient = {
       getProductDetails: jest.fn(),
-      deductStock: jest.fn(),
+      deductStock: jest.fn().mockResolvedValue(undefined),
     };
 
     useCase = new CreateOrderUseCase(mockOrderRepository, mockProductsClient);

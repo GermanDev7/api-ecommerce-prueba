@@ -1,23 +1,25 @@
 # E-Commerce Microservices API
 
-Plataforma de e-commerce construida como prueba técnica con una arquitectura de microservicios usando **NestJS**, **Prisma**, **PostgreSQL**, **Docker** y **Nginx**.
+Plataforma de e-commerce construida como prueba técnica con una arquitectura de microservicios usando **NestJS**, **Prisma**, **PostgreSQL**, **Docker** y **Nginx**.  
+La solución está compuesta por tres microservicios principales: **auth-service**, **products-service** y **orders-service**.
 
 ## Objetivo
 
 El proyecto busca demostrar:
 
 - Diseño de arquitectura backend con microservicios.
+- Separación por contexto de negocio: autenticación, productos y órdenes.
+- Protección de endpoints mediante JWT.
+- Aislamiento lógico de datos por usuario autenticado.
 - Simulación de despliegue local con contenedores.
 - Implementación de principios REST.
-- Separación de responsabilidades.
 - Pipeline básico de CI/CD.
 
 ---
 
 ## 1. Descripción general
 
-La solución está compuesta por dos microservicios principales:
-
+- **Auth Service**: administra registro, login, hash de contraseñas y emisión/validación de JWT.
 - **Products Service**: administra el catálogo de productos.
 - **Orders Service**: administra la creación y consulta de órdenes.
 
@@ -44,10 +46,17 @@ El sistema sigue una arquitectura de microservicios con separación por contexto
 - Permite crear órdenes validando información mediante consultas HTTP síncronas hacia el servicio de catálogo.
 - Tiene su propia base de datos **PostgreSQL**.
 
+### `auth-service`
+- Responsable del registro e inicio de sesión de usuarios.
+- Gestiona el cifrado hash de contraseñas.
+- Emite y valida **JSON Web Tokens (JWT)**.
+- Tiene su propia base de datos **PostgreSQL**.
+
 ### API Gateway (`nginx`)
 - Es el único punto de entrada al sistema.
 - Expone el puerto `8080`.
 - Enruta las solicitudes transparentemente hacia:
+  - `/api/v1/auth`
   - `/api/v1/products`
   - `/api/v1/orders`
 
@@ -56,9 +65,13 @@ El sistema sigue una arquitectura de microservicios con separación por contexto
 - No existen consultas SQL cruzadas entre servicios.
 - La integridad entre órdenes y productos se controla a nivel de aplicación mediante el enlace lógico `productId`.
 
+### Aislamiento de órdenes por usuario autenticado
+Las órdenes se encuentran asociadas al usuario autenticado.  
+Esto asegura aislamiento lógico entre clientes: un usuario no puede consultar ni modificar órdenes pertenecientes a otro usuario.  
+La identidad del cliente se obtiene a partir del **JWT** enviado en la solicitud.
+
 ### Documentación adicional anexa
 - **[Diagrama Entidad-Relación (MER)](/docs/diagrama-er.md)**
-- **[Plan de pruebas de software](/docs/plan-pruebas.md)**
 
 ---
 
